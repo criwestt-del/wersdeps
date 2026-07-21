@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Criwest — دروازه‌ی ناشناخته‌ها</title>
+<meta name="description" content="Criwest — یه جای خاص برای Freaks. برای اونایی که دنیا رو یه‌جور دیگه می‌بینن.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;0,9..144,900;1,9..144,400;1,9..144,600;1,9..144,900&family=Vazirmatn:wght@100..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --void:#0a0910;
+    --void-2:#0e0c17;
+    --surface:#161320;
+    --surface-2:#1d1929;
+    --line: rgba(201,192,224,0.14);
+    --line-strong: rgba(201,192,224,0.26);
+    --ink:#e9e3f0;
+    --dim:#948aa6;
+    --dimmer:#645d78;
+    --signal:#c9a227;
+    --signal-soft: rgba(201,162,39,0.16);
+    --amethyst:#9b6bff;
+    --amethyst-soft: rgba(155,107,255,0.14);
+    --serif: 'Fraunces', serif;
+    --fa: 'Vazirmatn', sans-serif;
+    --mono: 'IBM Plex Mono', monospace;
+  }
+
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  html{ scroll-behavior:smooth; }
+  @media (prefers-reduced-motion: reduce){
+    html{ scroll-behavior:auto; }
+    *{ animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important; scroll-behavior:auto !important; }
+  }
+
+  body{
+    background:var(--void);
+    color:var(--ink);
+    font-family:var(--fa);
+    font-weight:400;
+    line-height:1.9;
+    overflow-x:hidden;
+    position:relative;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  body::before{
+    content:"";
+    position:fixed; inset:0;
+    pointer-events:none;
+    z-index:998;
+    opacity:0.045;
+    mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  #glow{
+    position:fixed; width:440px; height:440px; border-radius:50%;
+    pointer-events:none; z-index:1; top:0; left:0;
+    background: radial-gradient(circle, rgba(201,162,39,0.08), rgba(155,107,255,0.05) 40%, transparent 70%);
+    transform:translate(-50%,-50%);
+    will-change:transform;
+  }
+
+  ::selection{ background:var(--signal-soft); color:var(--signal); }
+  a{ color:inherit; }
+  .ltr{ direction:ltr; unicode-bidi:isolate; }
+  .brand{ font-family:var(--serif); font-style:italic; font-weight:600; letter-spacing:0.01em; direction:ltr; unicode-bidi:isolate; }
+
+  section{ position:relative; z-index:2; padding: clamp(72px, 12vw, 160px) clamp(20px, 6vw, 80px); }
+  .wrap{ max-width:1180px; margin:0 auto; }
+
+  .eyebrow{
+    font-family:var(--mono); font-size:11px; letter-spacing:0.2em;
+    color:var(--signal); text-transform:uppercase; display:flex; align-items:center; gap:10px;
+    margin-bottom:22px; direction:ltr; justify-content:flex-end;
+  }
+  .eyebrow::after{ content:""; width:22px; height:1px; background:var(--signal); display:inline-block; }
+  .eyebrow.center{ justify-content:center; }
+  .eyebrow.center::after{ display:none; }
+
+  h2.title{
+    font-family:var(--fa); font-weight:800;
+    font-size:clamp(28px, 4vw, 46px); line-height:1.4; color:var(--ink);
+    margin-bottom:20px; max-width:820px; letter-spacing:-0.01em;
+  }
+
+  p.lead{ color:var(--dim); font-size:clamp(15.5px,1.6vw,18px); max-width:640px; }
+
+  .reveal{ opacity:0; transform:translateY(28px); transition: opacity 0.9s ease, transform 0.9s cubic-bezier(.16,1,.3,1); }
+  .reveal.in-view{ opacity:1; transform:translateY(0); }
+
+  header.nav{
+    position:fixed; top:0; inset-inline:0; z-index:500;
+    display:flex; align-items:center; justify-content:space-between;
+    padding: 20px clamp(20px,5vw,56px);
+    backdrop-filter: blur(10px);
+    background: linear-gradient(to bottom, rgba(10,9,16,0.85), transparent);
+    pointer-events:none;
+  }
+  header.nav > *{ pointer-events:auto; }
+  .nav-mark{ font-family:var(--serif); font-style:italic; font-weight:600; font-size:19px; letter-spacing:0.02em; direction:ltr; }
+  .nav-mark span{ color:var(--signal); font-style:normal; }
+  .sound-btn{
+    display:flex; align-items:center; gap:10px;
+    background:transparent; border:1px solid var(--line-strong); color:var(--dim);
+    font-family:var(--mono); font-size:10.5px; letter-spacing:0.1em;
+    padding:9px 16px; border-radius:999px; cursor:pointer;
+    transition: all 0.35s ease; direction:ltr;
+  }
+  .sound-btn:hover, .sound-btn:focus-visible{ border-color:var(--signal); color:var(--signal); }
+  .sound-btn .dot{ width:6px; height:6px; border-radius:50%; background:var(--dimmer); transition:all .3s; }
+  .sound-btn.on .dot{ background:var(--signal); box-shadow:0 0 8px var(--signal); animation:pulse 1.6s infinite ease-in-out; }
+  @keyframes pulse{ 0%,100%{ opacity:1; } 50%{ opacity:0.35; } }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    height:100svh; min-height:600px;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center; position:relative; overflow:hidden; padding:20px;
+  }
+  #stars{ position:absolute; inset:0; z-index:0; }
+  .hero-inner{ position:relative; z-index:2; display:flex; flex-direction:column; align-items:center; gap:24px; }
+  .wordmark{
+    font-family:var(--serif); font-style:italic; font-weight:600; direction:ltr;
+    font-size:clamp(60px, 15vw, 164px); line-height:0.9; letter-spacing:-0.01em;
+    background: linear-gradient(180deg, #f4efe0 0%, var(--ink) 55%, var(--signal) 130%);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+    filter: drop-shadow(0 0 40px rgba(201,162,39,0.18));
+  }
+  .hero-sub{ color:var(--dim); font-size:clamp(15px,1.7vw,18px); max-width:520px; }
+  .typed-line{
+    font-family:var(--mono); font-size:clamp(12px,1.4vw,13.5px);
+    color:var(--dimmer); letter-spacing:0.02em; min-height:20px; direction:ltr;
+    border-left:1px solid var(--signal); padding-left:12px;
+  }
+  .typed-line .cursor{ display:inline-block; width:7px; height:12px; background:var(--signal); margin-left:3px; animation:blink 1s step-end infinite; vertical-align:-1px; }
+  @keyframes blink{ 50%{ opacity:0; } }
+  .scroll-cue{
+    position:absolute; bottom:34px; left:50%; transform:translateX(-50%);
+    display:flex; flex-direction:column; align-items:center; gap:8px;
+    color:var(--dimmer); font-family:var(--mono); font-size:10px; letter-spacing:0.18em;
+    z-index:2;
+  }
+  .scroll-cue .line{ width:1px; height:34px; background:linear-gradient(var(--signal), transparent); animation:drop 2.2s infinite ease-in-out; }
+  @keyframes drop{ 0%{ opacity:0; transform:scaleY(0); transform-origin:top;} 40%{opacity:1; transform:scaleY(1);} 100%{ opacity:0; transform:scaleY(1); transform-origin:bottom;} }
+
+  /* ---------- IMAGE BREAK ---------- */
+  .imgbreak{
+    position:relative; min-height:64vh; display:flex; align-items:flex-end;
+    background-size:cover; background-position:center; overflow:hidden;
+    padding: 40px clamp(20px,6vw,80px) 46px;
+  }
+  .imgbreak::before{
+    content:""; position:absolute; inset:0;
+    background: linear-gradient(180deg, rgba(10,9,16,0.55) 0%, rgba(10,9,16,0.35) 40%, rgba(10,9,16,0.92) 100%);
+    z-index:1;
+  }
+  .imgbreak .imgbreak-content{ position:relative; z-index:2; max-width:760px; margin:0 auto; text-align:center; }
+  .imgbreak blockquote{
+    font-family:var(--serif); font-style:italic; font-weight:500;
+    font-size:clamp(19px,2.6vw,30px); color:var(--ink); line-height:1.5;
+  }
+  .imgbreak .credit{
+    font-family:var(--mono); font-size:10px; letter-spacing:0.14em; color:var(--dim);
+    margin-top:18px; text-transform:uppercase; direction:ltr;
+  }
+  @media (max-width:700px){ .imgbreak{ background-attachment:scroll !important; } }
+
+  /* ---------- MANIFESTO ---------- */
+  .manifesto{ display:grid; grid-template-columns:1.1fr 0.9fr; gap:60px; align-items:start; border-top:1px solid var(--line); }
+  .manifesto blockquote{
+    font-family:var(--fa); font-weight:700;
+    font-size:clamp(21px,2.8vw,31px); line-height:1.6; color:var(--ink);
+  }
+  .manifesto blockquote .ltr{ display:block; color:var(--signal); font-family:var(--serif); font-style:italic; font-weight:500; font-size:0.62em; margin-top:20px; }
+  .manifesto .body-col p{ color:var(--dim); margin-bottom:18px; font-size:16px; }
+  @media (max-width:860px){ .manifesto{ grid-template-columns:1fr; gap:32px; } }
+
+  /* ---------- SECRET OF THE DAY ---------- */
+  .secret-section{ border-top:1px solid var(--line); }
+  .secret-card{
+    position:relative; max-width:720px; margin:0 auto;
+    background: linear-gradient(160deg, var(--surface), var(--surface-2));
+    border:1px solid var(--line-strong); border-radius:6px;
+    padding:clamp(32px,6vw,64px); text-align:center; overflow:hidden;
+  }
+  .secret-card::before{
+    content:""; position:absolute; inset:0;
+    background: radial-gradient(600px 200px at 50% 0%, var(--signal-soft), transparent 70%);
+    pointer-events:none;
+  }
+  .seal{
+    width:64px; height:64px; margin:0 auto 26px; border-radius:50%;
+    border:1px solid var(--signal); display:flex; align-items:center; justify-content:center;
+    font-family:var(--mono); font-size:10px; color:var(--signal);
+    position:relative; cursor:pointer; transition: transform .4s ease;
+  }
+  .seal::after{ content:""; position:absolute; inset:-8px; border:1px solid var(--line-strong); border-radius:50%; }
+  .secret-stamp{ font-family:var(--mono); font-size:10.5px; letter-spacing:0.16em; color:var(--dimmer); margin-bottom:14px; text-transform:uppercase; direction:ltr; }
+  .secret-text{
+    font-family:var(--fa); font-size:clamp(18px,2.4vw,24px); font-weight:600;
+    color:var(--ink); min-height:100px; display:flex; align-items:center; justify-content:center;
+    transition: opacity .35s ease;
+  }
+  .btn{
+    font-family:var(--mono); font-size:11.5px; letter-spacing:0.1em;
+    background:transparent; color:var(--ink); border:1px solid var(--line-strong);
+    padding:13px 26px; border-radius:999px; cursor:pointer; margin-top:28px;
+    transition: all .35s ease; display:inline-flex; align-items:center; gap:10px;
+  }
+  .btn:hover, .btn:focus-visible{ border-color:var(--signal); color:var(--signal); box-shadow:0 0 22px rgba(201,162,39,0.14); }
+
+  /* ---------- FACTS ---------- */
+  .facts-section{ border-top:1px solid var(--line); }
+  .fact-stage{ display:grid; grid-template-columns: 1fr; gap:24px; max-width:820px; }
+  .fact-card{
+    border:1px solid var(--line); border-radius:6px; padding:36px clamp(24px,5vw,46px);
+    background:var(--surface); position:relative; min-height:150px;
+    display:flex; flex-direction:column; justify-content:center; gap:14px;
+  }
+  .fact-index{ font-family:var(--mono); font-size:11px; color:var(--signal); letter-spacing:0.14em; direction:ltr; text-align:left; }
+  .fact-text{ font-size:clamp(16px,1.9vw,19px); color:var(--ink); font-weight:500; }
+  .fact-controls{ display:flex; gap:14px; margin-top:8px; }
+  .icon-btn{
+    width:46px; height:46px; border-radius:50%; border:1px solid var(--line-strong);
+    background:transparent; color:var(--dim); cursor:pointer; display:flex; align-items:center; justify-content:center;
+    transition:all .3s ease; font-size:17px;
+  }
+  .icon-btn:hover, .icon-btn:focus-visible{ border-color:var(--signal); color:var(--signal); transform:translateY(-2px); }
+
+  /* ---------- RIDDLES ---------- */
+  .riddles-section{ border-top:1px solid var(--line); }
+  .riddle-grid{ display:grid; grid-template-columns:repeat(auto-fit, minmax(280px,1fr)); gap:20px; }
+  .riddle-card{
+    border:1px solid var(--line); background:var(--surface); border-radius:6px; padding:26px 26px 24px;
+    display:flex; flex-direction:column; gap:14px; cursor:pointer; transition:border-color .3s ease;
+  }
+  .riddle-card:hover{ border-color:var(--line-strong); }
+  .riddle-q{ font-size:15px; color:var(--ink); }
+  .riddle-a{
+    font-family:var(--mono); font-size:12px; color:var(--signal); letter-spacing:0.01em;
+    max-height:0; overflow:hidden; opacity:0; transition: max-height .5s ease, opacity .4s ease, margin .4s ease;
+    border-top:1px dashed var(--line-strong); padding-top:0;
+  }
+  .riddle-card.open .riddle-a{ max-height:120px; opacity:1; margin-top:2px; padding-top:14px; }
+  .riddle-hint{ font-family:var(--mono); font-size:10px; color:var(--dimmer); letter-spacing:0.14em; text-transform:uppercase; direction:ltr; }
+
+  /* ---------- QUIZ (shared style: mirror + iq) ---------- */
+  .quiz-box{
+    max-width:680px; margin:0 auto; border:1px solid var(--line-strong); border-radius:6px;
+    background:var(--surface); padding:clamp(28px,5vw,48px); position:relative;
+  }
+  .quiz-progress{ height:2px; background:var(--line); border-radius:2px; overflow:hidden; margin-bottom:30px; }
+  .quiz-progress i{ display:block; height:100%; background:var(--signal); width:0%; transition:width .5s ease; }
+  .quiz-q{ font-family:var(--fa); font-weight:700; font-size:clamp(18px,2.3vw,22px); margin-bottom:24px; min-height:60px; }
+  .quiz-options{ display:flex; flex-direction:column; gap:12px; }
+  .quiz-opt{
+    text-align:right; border:1px solid var(--line-strong); background:transparent; color:var(--ink);
+    padding:15px 20px; border-radius:4px; cursor:pointer; font-family:var(--fa); font-size:14.5px;
+    transition: all .25s ease;
+  }
+  .quiz-opt:hover, .quiz-opt:focus-visible{ border-color:var(--signal); background:var(--signal-soft); }
+  .quiz-form{ display:none; }
+  .quiz-form.show{ display:block; }
+  .quiz-result{ display:none; text-align:center; }
+  .quiz-result.show{ display:block; }
+  .quiz-result .type-name{ font-family:var(--serif); font-style:italic; font-weight:600; font-size:clamp(26px,4vw,38px); color:var(--signal); margin-bottom:14px; direction:ltr; }
+  .quiz-result p{ color:var(--dim); }
+  .quiz-note{ font-family:var(--mono); font-size:10.5px; color:var(--dimmer); margin-top:22px; letter-spacing:0.02em; }
+
+  /* ---------- WHEEL ---------- */
+  .wheel-section{ border-top:1px solid var(--line); text-align:center; }
+  .wheel-wrap{ display:flex; flex-direction:column; align-items:center; gap:36px; }
+  .dial-holder{ position:relative; width:min(360px, 78vw); aspect-ratio:1/1; }
+  .dial-holder svg{ width:100%; height:100%; overflow:visible; }
+  .dial-center{
+    position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+    width:34%; height:34%; border-radius:50%; background:var(--void);
+    border:1px solid var(--signal); display:flex; align-items:center; justify-content:center;
+    font-family:var(--mono); font-size:10.5px; letter-spacing:0.08em; color:var(--signal);
+    cursor:pointer; z-index:3; text-align:center; line-height:1.4; padding:6px; direction:ltr;
+    transition: box-shadow .3s ease;
+  }
+  .dial-center:hover, .dial-center:focus-visible{ box-shadow:0 0 30px rgba(201,162,39,0.25); }
+  .dial-needle{ transform-origin:50% 50%; transition: transform 3.6s cubic-bezier(.12,.85,.1,1); }
+  .capsule{
+    max-width:640px; min-height:120px; border:1px solid var(--line-strong); border-radius:6px;
+    background:var(--surface); padding:32px 30px; display:flex; align-items:center; justify-content:center;
+  }
+  .capsule p{ font-family:var(--fa); font-weight:600; font-size:clamp(16.5px,2.1vw,20px); color:var(--ink); }
+  .capsule .placeholder{ color:var(--dimmer); font-family:var(--mono); font-size:11.5px; letter-spacing:0.08em; direction:ltr; }
+
+  /* ---------- FRAGMENTS ---------- */
+  .fragments-section{ border-top:1px solid var(--line); overflow:hidden; }
+  .marquee-track{ display:flex; gap:60px; width:max-content; animation: scroll-left 60s linear infinite; }
+  .fragments-section:hover .marquee-track{ animation-play-state:paused; }
+  @keyframes scroll-left{ from{ transform:translateX(0);} to{ transform:translateX(-50%);} }
+  .frag-item{
+    font-family:var(--fa); font-weight:600; font-size:clamp(17px,2.2vw,23px);
+    color:var(--dim); white-space:nowrap; display:flex; align-items:center; gap:60px;
+  }
+  .frag-item::after{ content:"◆"; color:var(--signal); font-size:11px; margin-inline-start:60px; }
+
+  /* ---------- FOOTER ---------- */
+  footer{ position:relative; padding:110px clamp(20px,6vw,80px) 50px; text-align:center; background-size:cover; background-position:center bottom; }
+  footer::before{ content:""; position:absolute; inset:0; background:linear-gradient(180deg, var(--void) 0%, rgba(10,9,16,0.75) 30%, rgba(10,9,16,0.94) 100%); }
+  footer > *{ position:relative; z-index:2; }
+  footer .glyph{ font-family:var(--serif); font-style:italic; font-size:32px; color:var(--signal); margin-bottom:18px; }
+  footer .tagline{ font-family:var(--serif); font-style:italic; font-size:14px; letter-spacing:0.02em; color:var(--dim); margin-bottom:6px; direction:ltr; }
+  footer .fine{ font-family:var(--mono); font-size:10px; color:var(--dimmer); letter-spacing:0.12em; direction:ltr; margin-top:26px; }
+
+  ::-webkit-scrollbar{ width:8px; }
+  ::-webkit-scrollbar-track{ background:var(--void); }
+  ::-webkit-scrollbar-thumb{ background:var(--surface-2); border-radius:4px; }
+  :focus-visible{ outline:1px solid var(--signal); outline-offset:3px; }
+
+  @media (max-width:600px){
+    section{ padding: 56px 18px; }
+    .dial-holder{ width:min(300px, 84vw); }
+  }
+</style>
+</head>
+<body>
+
+<div id="glow"></div>
+
+<header class="nav">
+  <div class="nav-mark">CRI<span>W</span>EST</div>
+  <button class="sound-btn" id="soundToggle" aria-pressed="false">
+    <span class="dot"></span>
+    <span id="soundLabel">STAR SHOPPING</span>
+  </button>
+</header>
+
+<!-- hidden youtube audio player -->
+<iframe id="ytplayer" width="1" height="1" style="position:fixed; bottom:0; left:0; opacity:0; pointer-events:none;"
+  src="https://www.youtube.com/embed/m8QQR-wQA0I?enablejsapi=1&controls=0&loop=1&playlist=m8QQR-wQA0I"
+  allow="autoplay" title="background music"></iframe>
+
+<!-- HERO -->
+<section class="hero" id="top">
+  <canvas id="stars"></canvas>
+  <div class="hero-inner">
+    <div class="eyebrow center ltr">SIGNAL RECEIVED — ARCHIVE UNMARKED</div>
+    <h1 class="wordmark">CRIWEST</h1>
+    <p class="hero-sub">یه دروازه‌ست، نه یه سایت. برای اونایی که دنیا رو یه‌جور دیگه می‌بینن.</p>
+    <div class="typed-line"><span id="typedText"></span><span class="cursor"></span></div>
+  </div>
+  <div class="scroll-cue"><span>یه‌کم پایین‌تر</span><span class="line"></span></div>
+</section>
+
+<!-- IMAGE BREAK 1 — EARTHRISE -->
+<div class="imgbreak" style="background-image:url('https://apod.nasa.gov/apod/image/1812/Earthrise1_Apollo8AndersWeigang_960.jpg'); background-attachment:fixed;">
+  <div class="imgbreak-content">
+    <blockquote>«اولین بار که یه انسان زمین رو از پشت ماه دید، فهمید هیچ مرزی روی این سیاره واقعی نیست.»</blockquote>
+    <div class="credit">Earthrise — Apollo 8 / NASA, 1968</div>
+  </div>
+</div>
+
+<!-- MANIFESTO -->
+<section class="manifesto reveal" id="manifesto">
+  <div>
+    <blockquote>
+      «<span class="brand">Freaks</span>» اونایی نیستن که دنیا رو نمی‌فهمن؛ اونایی‌ان که یه لایه بیشتر از بقیه می‌بینن. همینم برگشت‌ناپذیرشون می‌کنه.
+      <span class="ltr">They didn't bring us here to change the past.</span>
+    </blockquote>
+  </div>
+  <div class="body-col">
+    <div class="eyebrow">درباره‌ی این‌جا</div>
+    <p><span class="brand">Criwest</span> یه سایت معمولی نیست. بیشتر شبیه یه بایگانی نیمه‌بازه؛ هر بار میای، یه تیکه‌ش برات باز می‌شه، نه بیشتر نه کمتر.</p>
+    <p>این‌جا رو برای اونایی ساختیم که سؤالاشون از جواباشون بلندتره. برای اونایی که شب‌ها زل می‌زنن به سقف و می‌پرسن «چرا این‌جا؟» به‌جای «چرا نه؟».</p>
+    <p>اگه حس می‌کنی این‌جا رو می‌شناسی، درست حدس زدی. اگه حس می‌کنی هیچ‌جا رو نمی‌شناسی — به جمع <span class="brand">Freaks</span> خوش اومدی.</p>
+  </div>
+</section>
+
+<!-- SECRET OF THE DAY -->
+<section class="secret-section reveal" id="secret">
+  <div class="wrap" style="text-align:center;">
+    <div class="eyebrow center">راز امروز</div>
+    <h2 class="title" style="margin:0 auto 40px; text-align:center;">هر بار این مهر رو بشکنی، یه چیزی برات باز می‌شه که قرار نبود بدونی.</h2>
+    <div class="secret-card">
+      <div class="secret-stamp">CLASSIFIED — FOR FREAKS ONLY</div>
+      <div class="seal" id="secretSeal" tabindex="0" role="button" aria-label="شکستن مهر">✺</div>
+      <div class="secret-text" id="secretText">برای دیدن راز امروز، مهر رو لمس کن.</div>
+      <button class="btn" id="secretBtn">یه راز دیگه بگو</button>
+    </div>
+  </div>
+</section>
+
+<!-- FACTS -->
+<section class="facts-section reveal" id="facts">
+  <div class="wrap">
+    <div class="eyebrow">سیگنال‌های عجیب</div>
+    <h2 class="title">چیزایی درباره‌ی جهان، آدم و تاریخ که تا حالا کسی برات نگفته.</h2>
+    <p class="lead" style="margin-bottom:36px;">فکت‌های واقعی و کمی عجیب — یکی‌یکی کشفشون کن.</p>
+    <div class="fact-stage">
+      <div class="fact-card">
+        <div class="fact-index" id="factIndex">01 / 14</div>
+        <div class="fact-text" id="factText"></div>
+        <div class="fact-controls">
+          <button class="icon-btn" id="factPrev" aria-label="فکت قبلی">→</button>
+          <button class="icon-btn" id="factNext" aria-label="فکت بعدی">←</button>
+          <button class="icon-btn" id="factShuffle" aria-label="فکت تصادفی">✶</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- IMAGE BREAK 2 — PILLARS OF CREATION -->
+<div class="imgbreak" style="background-image:url('https://apod.nasa.gov/apod/image/2210/stsci-pillarsofcreation1280c.jpg'); background-attachment:fixed;">
+  <div class="imgbreak-content">
+    <blockquote>ستاره‌ها همین الان، تو همین لحظه، دارن یه‌جای دیگه‌ی کهکشان متولد می‌شن.</blockquote>
+    <div class="credit">Pillars of Creation — JWST / NASA, ESA, CSA, STScI</div>
+  </div>
+</div>
+
+<!-- RIDDLES -->
+<section class="riddles-section reveal" id="riddles">
+  <div class="wrap">
+    <div class="eyebrow">معماهای ذهن</div>
+    <h2 class="title">قبل از دیدن جواب، حداقل یه‌بار خودت روش فکر کن.</h2>
+    <div class="riddle-grid" id="riddleGrid" style="margin-top:36px;"></div>
+  </div>
+</section>
+
+<!-- MIRROR / PERSONALITY QUIZ -->
+<section class="reveal" id="mirror" style="border-top:1px solid var(--line);">
+  <div class="wrap" style="text-align:center;">
+    <div class="eyebrow center">آینه</div>
+    <h2 class="title" style="margin:0 auto 40px;">پنج سؤال. یه بازتاب. ببین کدوم Freak هستی.</h2>
+    <div class="quiz-box">
+      <div class="quiz-progress"><i id="mirrorBar"></i></div>
+      <div class="quiz-form show" id="mirrorForm">
+        <div class="quiz-q" id="mirrorQ"></div>
+        <div class="quiz-options" id="mirrorOpts"></div>
+      </div>
+      <div class="quiz-result" id="mirrorResult">
+        <div class="eyebrow center">بازتاب تو</div>
+        <div class="type-name" id="mirrorResultName"></div>
+        <p id="mirrorResultDesc"></p>
+        <button class="btn" id="mirrorRestart" style="margin-top:30px;">دوباره نگاه کن</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- IQ TEST -->
+<section class="reveal" id="iq" style="border-top:1px solid var(--line);">
+  <div class="wrap" style="text-align:center;">
+    <div class="eyebrow center">تست ذهن</div>
+    <h2 class="title" style="margin:0 auto 12px;">۶ سؤال منطقی. ببین ذهنت چقدر تیزه.</h2>
+    <p class="lead" style="margin:0 auto 40px; text-align:center;">این یه تست علمیِ IQ نیست، فقط یه بازی سریع برای حال کردن با ذهنته.</p>
+    <div class="quiz-box">
+      <div class="quiz-progress"><i id="iqBar"></i></div>
+      <div class="quiz-form show" id="iqForm">
+        <div class="quiz-q" id="iqQ"></div>
+        <div class="quiz-options" id="iqOpts"></div>
+      </div>
+      <div class="quiz-result" id="iqResult">
+        <div class="eyebrow center">نتیجه</div>
+        <div class="type-name" id="iqResultName"></div>
+        <p id="iqResultDesc"></p>
+        <div class="quiz-note">صرفاً برای سرگرمی — نه یه معیار علمی برای هوش واقعی‌ت 🙂</div>
+        <button class="btn" id="iqRestart" style="margin-top:22px;">دوباره امتحان کن</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHEEL -->
+<section class="wheel-section reveal" id="wheel">
+  <div class="wrap wheel-wrap">
+    <div>
+      <div class="eyebrow center">جعبه‌ی اسرار</div>
+      <h2 class="title" style="margin:0 auto; text-align:center;">دستگیره رو بچرخون. هرچی بیرون اومد، مال توئه.</h2>
+    </div>
+    <div class="dial-holder">
+      <svg viewBox="0 0 200 200" aria-hidden="true">
+        <g id="dialRing">
+          <circle cx="100" cy="100" r="96" fill="none" stroke="rgba(201,192,224,0.16)" stroke-width="1"/>
+          <circle cx="100" cy="100" r="80" fill="none" stroke="rgba(201,192,224,0.1)" stroke-width="1"/>
+          <g id="dialLabels" font-family="IBM Plex Mono" font-size="8.5" fill="#948aa6" letter-spacing="1"></g>
+          <g id="dialTicks" stroke="rgba(201,192,224,0.3)" stroke-width="1"></g>
+        </g>
+        <g class="dial-needle" id="dialNeedle">
+          <line x1="100" y1="100" x2="100" y2="16" stroke="#c9a227" stroke-width="1.5"/>
+          <circle cx="100" cy="14" r="3" fill="#c9a227"/>
+        </g>
+      </svg>
+      <div class="dial-center" id="wheelSpin" tabindex="0" role="button" aria-label="چرخاندن جعبه اسرار">SPIN</div>
+    </div>
+    <div class="capsule" id="capsule">
+      <p class="placeholder">AWAITING ROTATION…</p>
+    </div>
+  </div>
+</section>
+
+<!-- IMAGE BREAK 3 — ALDRIN VISOR -->
+<div class="imgbreak" style="background-image:url('https://apod.nasa.gov/apod/image/2307/AldrinVisorCrop_Apollo11_1080.jpg'); background-attachment:fixed;">
+  <div class="imgbreak-content">
+    <blockquote>یه نفر همون لحظه که پاش رو گذاشت رو ماه، تو ذهنش داشت به زمین فکر می‌کرد.</blockquote>
+    <div class="credit">Apollo 11 — Buzz Aldrin / NASA, 1969</div>
+  </div>
+</div>
+
+<!-- FRAGMENTS -->
+<section class="fragments-section reveal" id="fragments">
+  <div class="wrap" style="margin-bottom:36px;">
+    <div class="eyebrow">زمزمه‌های عمیق</div>
+    <h2 class="title">جمله‌هایی که شاید شب دیروقت برات یه معنی دیگه پیدا کنن.</h2>
+  </div>
+  <div class="marquee-track" id="marqueeTrack"></div>
+</section>
+
+<footer class="reveal" style="background-image:url('https://apod.nasa.gov/apod/image/2202/bluemarble_apollo17_960.jpg');">
+  <div class="glyph">✺</div>
+  <div class="tagline">"They didn't bring us here to change the past."</div>
+  <div class="fine">CRIWEST — A HOME FOR FREAKS — ARCHIVE STILL OPEN</div>
+</footer>
+
+<script>
+/* ================= DATA ================= */
+const SECRETS = [
+  "شاید تو تنها کسی نباشی که الان داره دقیقاً همین جمله رو با همین حس می‌خونه.",
+  "بعضی از خاطره‌هات مال خودت نیستن؛ فقط قرار بوده یه جایی نگه داشته بشن.",
+  "هر تصمیمی که می‌گیری، یه ورژن دیگه از تو داره یه تصمیم دیگه می‌گیره.",
+  "سکوت بین دو تا حرف، گاهی از خودِ حرف صادق‌تره.",
+  "چیزی که بهش می‌گی «شانس»، شاید فقط یه الگوئه که هنوز نفهمیدیش.",
+  "بعضی آدما رو نه برای موندن، برای نشون‌دادن یه مسیر آوردن تو زندگیت.",
+  "هر شب چند دقیقه‌ای یه جایی می‌ری که هیچ نقشه‌ای ازش نداری.",
+  "این جمله دقیقاً همونی نیست که فکر کردی خوندیش.",
+  "بعضی سؤالا رو نساختن که جوابشو بگیری؛ ساختنش که بیدار بمونی.",
+  "هرچی بیشتر بدونی، مرز بین واقعی و شبیهِ واقعی کمرنگ‌تر می‌شه.",
+  "شاید گذشته تموم نشده؛ فقط داری از یه زاویه‌ی دیگه نگاهش می‌کنی.",
+  "یکی همین الان داره به چیزی فکر می‌کنه که تو فردا بهش فکر می‌کنی."
+];
+
+const FACTS = [
+  "اختاپوس‌ها سه تا قلب دارن و خونشون آبیه. دو تا قلب فقط کار آبشش‌هاشونه.",
+  "تعداد بازی‌های ممکن تو شطرنج بیشتر از تعداد اتم‌های جهانِ قابل‌مشاهده‌ست.",
+  "بدنت یه مقدار خیلی کم نور از خودش ساطع می‌کنه؛ فقط چشم عادی نمی‌بینتش.",
+  "خورشید صدا تولید می‌کنه ولی چون تو خلأ صوت منتقل نمی‌شه، هیچ‌وقت نمی‌شنویمش.",
+  "مغزت تو یه روز عادی هزاران فکر می‌سازه که بیشترشون اصلاً یادت نمی‌مونه.",
+  "بعضی ستاره‌هایی که امشب می‌بینی، شاید هزاران سال پیش از بین رفته باشن.",
+  "دژاووی که حس می‌کنی، شاید فقط یه تأخیر میلی‌ثانیه‌ای بین دو نیمکره‌ی مغزته.",
+  "کهکشان راه‌شیری و آندرومدا دارن به هم نزدیک می‌شن — یه روز با هم ادغام می‌شن.",
+  "بعضی سلول‌های بدنت از خودت جوون‌ترن؛ مدام دارن عوض می‌شن.",
+  "زمان روی زمین یکسان نمی‌گذره؛ نزدیک سطح دریا یه‌کم کندتر از قله‌ی کوهه.",
+  "مکالمه‌های تو ذهنت سریع‌تر از اونیه که بتونی با صدای بلند بگیشون.",
+  "بعضی حیوونا میدان مغناطیسی زمین رو می‌بینن؛ چیزی که آدم هیچ‌وقت تجربه نکرده.",
+  "خیلی محتمله اتم‌های بدنت یه زمانی بخشی از یه ستاره‌ی منفجرشده بودن.",
+  "تو خواب، مغزت اجازه می‌ده قوانین فیزیک رو کامل نادیده بگیری."
+];
+
+const RIDDLES = [
+  {q:"چیزی هست که هرچی بیشتر ازش برداری، بزرگ‌تر می‌شه. چیه؟", a:"یه گودال."},
+  {q:"صدا دارم ولی دهن ندارم؛ می‌دوم ولی پا ندارم. چی‌ام؟", a:"رودخانه."},
+  {q:"امروز دیروزِ فرداست و فردایِ دیروز. من کدوم روزم؟", a:"امروز — هر روزی که توش ایستادی."},
+  {q:"چی همیشه داره میاد، ولی هیچ‌وقت نمی‌رسه؟", a:"فردا."},
+  {q:"می‌شکنمت تا ازت استفاده کنم. چی‌ام؟", a:"تخم‌مرغ."},
+  {q:"تو تاریکی کامل هم دیده می‌شم، چون از خودم نور دارم. چی‌ام؟", a:"یه فکر — یا یه رؤیا."},
+  {q:"همه دارنش، ولی هیچ‌کس نمی‌تونه قرضش بده یا بگیره. چیه؟", a:"زمانِ خودِ هرکس."},
+  {q:"چند تا ماه داره یه سال؟ (سؤال ساده‌ست، ولی همه یهو گیر می‌کنن)", a:"۱۲ تا — گاهی سؤال ساده، جواب سخت نیست، فقط ذهن گول می‌خوره."}
+];
+
+const QUOTES = [
+  "ما دنبال حقیقت نیستیم؛ دنبال یه دروغیم که راحت‌تر بشه تحملش کرد.",
+  "هر آینه فقط یه زاویه از تو رو نشون می‌ده؛ بقیه‌ت یه جای دیگه زندگی می‌کنه.",
+  "گذشته عوض نمی‌شه، ولی معنایی که بهش می‌دی هر روز فرق می‌کنه.",
+  "بعضیا دنیا رو عوض می‌کنن، بعضیا فقط قراره ببیننش — هر دوتاش لازمه.",
+  "ذهن آدم بزرگ‌ترین اتاق تاریک دنیاست که خودشم نقشه‌ش رو نداره.",
+  "کنجکاوی تنها چیزیه که می‌تونه ترس رو وادار کنه یه قدم عقب بره.",
+  "هیچ سکوتی خالی نیست؛ فقط هنوز کسی زبونش رو پیدا نکرده.",
+  "تو محصول هزاران انتخابی هستی که حتی یادت نیست کِی گرفتیشون.",
+  "بی‌نهایت رو نمی‌شه فهمید، فقط می‌شه از کنارش رد شد و حسش کرد.",
+  "هر سؤالی که جوابشو می‌دونی، دیگه سؤال نیست؛ فقط یادآوریه.",
+  "همیشه دیرتر از لحظه‌ای که توشیم، می‌فهمیمش.",
+  "بودن تو این دنیا یعنی هر لحظه یه‌جوری ناتموم موندن."
+];
+
+const MIRROR_QUIZ = [
+  {q:"وقتی شب بیدار می‌مونی، ذهنت بیشتر کجاست؟", opts:[
+    "دارم اتفاق‌های امروز رو مرور می‌کنم",
+    "به چیزی فکر می‌کنم که هنوز اتفاق نیفتاده",
+    "دارم چیزی که شنیدم رو زیر سؤال می‌برم",
+    "هیچ‌جا — فقط دارم سیر می‌کنم"
+  ]},
+  {q:"با یه اتفاق عجیب روبه‌رو می‌شی، اول چیکار می‌کنی؟", opts:[
+    "ساکت می‌مونم و دقیق نگاه می‌کنم",
+    "براش یه داستان تو ذهنم می‌سازم",
+    "دنبال مدرک و توضیح منطقی می‌گردم",
+    "می‌ذارم منو با خودش ببره"
+  ]},
+  {q:"کدوم جمله بیشتر شبیه توئه؟", opts:[
+    "بیشتر می‌بینم تا این‌که حرف بزنم",
+    "دنیای درونم بزرگ‌تر از دنیای بیرونمه",
+    "تا خودم چیزی رو نبینم، باورش نمی‌کنم",
+    "مسیر برام مهم‌تر از مقصده"
+  ]},
+  {q:"از کدوم بیشتر می‌ترسی؟", opts:[
+    "از دست‌دادن دقتم تو دیدن جزئیات",
+    "از این‌که رؤیاهام هیچ‌وقت شکل نگیرن",
+    "از این‌که فریب یه باور غلط رو بخورم",
+    "از این‌که یه‌جا بند بشم"
+  ]},
+  {q:"اگه یه روز کامل تنها بودی، چیکار می‌کردی؟", opts:[
+    "می‌نشستم و اطرافم رو زیر نظر می‌گرفتم",
+    "یه چیز خیالی می‌ساختم — داستان، نقشه، دنیا",
+    "یه موضوع رو تا ته می‌کاویدم",
+    "بی‌هدف راه می‌افتادم تا ببینم کجا می‌رسم"
+  ]}
+];
+
+const TYPES = [
+  {name:"THE WATCHER", desc:"چیزایی رو می‌بینی که بقیه از کنارش رد می‌شن. سکوتت یه انتخابه، نه ضعف. برای تو، دنیا پر از جزئیاتیه که کسی حواسش نیست."},
+  {name:"THE DREAMER", desc:"دنیای درونت از دنیای بیرون بزرگ‌تره. با تخیل زندگی می‌کنی، نه فقط با واقعیت — و همینه که متفاوتت می‌کنه."},
+  {name:"THE SKEPTIC", desc:"تا خودت نبینی، باور نمی‌کنی. این دقت، هم قدرتته هم مرزته — و هر دوش بخشی از Freak بودنته."},
+  {name:"THE WANDERER", desc:"مسیر برات از مقصد مهم‌تره. دنبال نقشه نیستی؛ دنبال حس گم‌شدن تو جایی هستی که هنوز اسم نداره."}
+];
+
+const IQ_QUIZ = [
+  {q:"دنباله رو کامل کن: 2, 4, 8, 16, ?", opts:["20","24","32","18"], correct:2},
+  {q:"کدوم کلمه با بقیه فرق داره؟", opts:["کتاب","دفتر","مداد","روزنامه"], correct:2},
+  {q:"اگه امروز سه‌شنبه باشه، ۱۰۰ روز دیگه چه روزیه؟", opts:["چهارشنبه","پنجشنبه","جمعه","شنبه"], correct:1},
+  {q:"دنباله رو کامل کن: A, C, F, J, ?", opts:["M","N","O","P"], correct:2},
+  {q:"کدوم عدد با بقیه فرق داره؟", opts:["3","7","11","12"], correct:3},
+  {q:"«بعضی گربه‌ها سیاهن. همه‌ی سیاه‌ها ترسناکن.» پس چی درسته؟", opts:["همه‌ی گربه‌ها ترسناکن","بعضی گربه‌ها ترسناکن","هیچ گربه‌ای ترسناک نیست","نمی‌شه گفت"], correct:1}
+];
+
+const IQ_RESULTS = [
+  {min:0, max:2, name:"CURIOUS MIND", desc:"مهم نیست چندتا رو درست زدی؛ مهمه که تا آخر باهاش موندی. کنجکاوی از هر جوابی باارزش‌تره."},
+  {min:3, max:4, name:"SHARP MIND", desc:"ذهنت الگوها رو زود می‌گیره. دقیقاً همون چیزیه که بین Freaks قدر می‌بینه."},
+  {min:5, max:6, name:"RARE MIND", desc:"خیلی کم پیش میاد کسی همه رو بزنه. یا خیلی تیزی، یا خیلی شانس آوردی — به‌هرحال بین ما جات هست."}
+];
+
+/* ================= HERO CANVAS STARFIELD ================= */
+(function(){
+  const canvas = document.getElementById('stars');
+  const ctx = canvas.getContext('2d');
+  let w, h, stars = [];
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function resize(){
+    w = canvas.width = canvas.offsetWidth * devicePixelRatio;
+    h = canvas.height = canvas.offsetHeight * devicePixelRatio;
+  }
+  function initStars(){
+    const count = Math.floor((canvas.offsetWidth * canvas.offsetHeight) / 3200);
+    stars = Array.from({length:count}, () => ({
+      x: Math.random()*w, y: Math.random()*h,
+      r: Math.random()*1.4 + 0.3,
+      a: Math.random(),
+      speed: Math.random()*0.006 + 0.002
+    }));
+  }
+  function draw(t){
+    ctx.clearRect(0,0,w,h);
+    stars.forEach(s=>{
+      const twinkle = reduced ? s.a : (Math.sin(t*s.speed + s.x) * 0.5 + 0.5);
+      ctx.beginPath();
+      ctx.fillStyle = `rgba(233,227,240,${0.15 + twinkle*0.7})`;
+      ctx.arc(s.x, s.y, s.r*devicePixelRatio, 0, Math.PI*2);
+      ctx.fill();
+    });
+    if(!reduced) requestAnimationFrame(draw);
+  }
+  window.addEventListener('resize', ()=>{ resize(); initStars(); });
+  resize(); initStars(); requestAnimationFrame(draw);
+  if(reduced) draw(0);
+})();
+
+/* ================= CURSOR GLOW ================= */
+(function(){
+  const glow = document.getElementById('glow');
+  if(window.matchMedia('(pointer:coarse)').matches){ glow.style.display='none'; return; }
+  window.addEventListener('mousemove', e=>{
+    glow.style.transform = `translate(${e.clientX}px, ${e.clientY}px) translate(-50%,-50%)`;
+  });
+})();
+
+/* ================= TYPED LINE ================= */
+(function(){
+  const text = "They didn't bring us here to change the past.";
+  const el = document.getElementById('typedText');
+  let i = 0;
+  function type(){
+    if(i <= text.length){ el.textContent = text.slice(0, i); i++; setTimeout(type, 48); }
+  }
+  setTimeout(type, 900);
+})();
+
+/* ================= SCROLL REVEAL ================= */
+(function(){
+  const items = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(en=>{ if(en.isIntersecting){ en.target.classList.add('in-view'); io.unobserve(en.target); } });
+  }, {threshold:0.15});
+  items.forEach(i=>io.observe(i));
+})();
+
+/* ================= SECRET OF THE DAY ================= */
+(function(){
+  const textEl = document.getElementById('secretText');
+  const seal = document.getElementById('secretSeal');
+  const btn = document.getElementById('secretBtn');
+  let used = [];
+  function pick(){
+    if(used.length === SECRETS.length) used = [];
+    let idx;
+    do{ idx = Math.floor(Math.random()*SECRETS.length); } while(used.includes(idx));
+    used.push(idx);
+    textEl.style.opacity = 0;
+    setTimeout(()=>{ textEl.textContent = SECRETS[idx]; textEl.style.opacity = 1; }, 250);
+  }
+  function reveal(){ seal.style.transform = 'rotate(50deg) scale(0.9)'; pick(); }
+  seal.addEventListener('click', reveal);
+  seal.addEventListener('keydown', e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); reveal(); } });
+  btn.addEventListener('click', pick);
+})();
+
+/* ================= FACTS ================= */
+(function(){
+  const textEl = document.getElementById('factText');
+  const idxEl = document.getElementById('factIndex');
+  let cur = 0;
+  function render(){
+    textEl.style.opacity = 0;
+    setTimeout(()=>{
+      textEl.textContent = FACTS[cur];
+      idxEl.textContent = String(cur+1).padStart(2,'0') + " / " + FACTS.length;
+      textEl.style.opacity = 1;
+    }, 200);
+  }
+  textEl.style.transition = 'opacity .35s ease';
+  document.getElementById('factNext').addEventListener('click', ()=>{ cur = (cur+1)%FACTS.length; render(); });
+  document.getElementById('factPrev').addEventListener('click', ()=>{ cur = (cur-1+FACTS.length)%FACTS.length; render(); });
+  document.getElementById('factShuffle').addEventListener('click', ()=>{ cur = Math.floor(Math.random()*FACTS.length); render(); });
+  render();
+})();
+
+/* ================= RIDDLES ================= */
+(function(){
+  const grid = document.getElementById('riddleGrid');
+  RIDDLES.forEach(r=>{
+    const card = document.createElement('div');
+    card.className = 'riddle-card';
+    card.innerHTML = `<div class="riddle-hint">RIDDLE</div><div class="riddle-q">${r.q}</div><div class="riddle-a">${r.a}</div>`;
+    card.addEventListener('click', ()=> card.classList.toggle('open'));
+    grid.appendChild(card);
+  });
+})();
+
+/* ================= GENERIC QUIZ ENGINE ================= */
+function buildQuiz(cfg){
+  const { data, formEl, qEl, optsEl, barEl, resultEl, resultNameEl, resultDescEl, restartBtn, onFinish } = cfg;
+  let step = 0, state = cfg.initState();
+  function renderQ(){
+    const item = data[step];
+    qEl.textContent = item.q;
+    optsEl.innerHTML = '';
+    item.opts.forEach((opt, i)=>{
+      const b = document.createElement('button');
+      b.className = 'quiz-opt';
+      b.textContent = opt;
+      b.addEventListener('click', ()=>{
+        cfg.onAnswer(state, item, i);
+        step++;
+        if(step < data.length){ renderQ(); } else { finish(); }
+      });
+      optsEl.appendChild(b);
+    });
+    barEl.style.width = (step/data.length*100) + '%';
+  }
+  function finish(){
+    barEl.style.width = '100%';
+    formEl.classList.remove('show');
+    onFinish(state, resultNameEl, resultDescEl);
+    resultEl.classList.add('show');
+  }
+  restartBtn.addEventListener('click', ()=>{
+    step = 0; state = cfg.initState();
+    resultEl.classList.remove('show');
+    formEl.classList.add('show');
+    renderQ();
+  });
+  renderQ();
+}
+
+/* MIRROR */
+buildQuiz({
+  data: MIRROR_QUIZ,
+  formEl: document.getElementById('mirrorForm'),
+  qEl: document.getElementById('mirrorQ'),
+  optsEl: document.getElementById('mirrorOpts'),
+  barEl: document.getElementById('mirrorBar'),
+  resultEl: document.getElementById('mirrorResult'),
+  resultNameEl: document.getElementById('mirrorResultName'),
+  resultDescEl: document.getElementById('mirrorResultDesc'),
+  restartBtn: document.getElementById('mirrorRestart'),
+  initState: ()=> [0,0,0,0],
+  onAnswer: (scores, item, i)=>{ scores[i]++; },
+  onFinish: (scores, nameEl, descEl)=>{
+    let maxI = 0;
+    scores.forEach((s,i)=>{ if(s > scores[maxI]) maxI = i; });
+    nameEl.textContent = TYPES[maxI].name;
+    descEl.textContent = TYPES[maxI].desc;
+  }
+});
+
+/* IQ */
+buildQuiz({
+  data: IQ_QUIZ,
+  formEl: document.getElementById('iqForm'),
+  qEl: document.getElementById('iqQ'),
+  optsEl: document.getElementById('iqOpts'),
+  barEl: document.getElementById('iqBar'),
+  resultEl: document.getElementById('iqResult'),
+  resultNameEl: document.getElementById('iqResultName'),
+  resultDescEl: document.getElementById('iqResultDesc'),
+  restartBtn: document.getElementById('iqRestart'),
+  initState: ()=> ({score:0}),
+  onAnswer: (state, item, i)=>{ if(i === item.correct) state.score++; },
+  onFinish: (state, nameEl, descEl)=>{
+    const r = IQ_RESULTS.find(r => state.score >= r.min && state.score <= r.max) || IQ_RESULTS[0];
+    nameEl.textContent = r.name;
+    descEl.textContent = r.desc;
+  }
+});
+
+/* ================= WHEEL ================= */
+(function(){
+  const labels = ["راز","واقعیت","پرسش","پارادوکس","رؤیا","کیهان","ذهن","زمان"];
+  const labelsG = document.getElementById('dialLabels');
+  const ticksG = document.getElementById('dialTicks');
+  const cx=100, cy=100, rLabel=64, rTickOuter=88, rTickInner=80;
+  labels.forEach((lab,i)=>{
+    const angle = (i/labels.length)*2*Math.PI - Math.PI/2;
+    const x = cx + rLabel*Math.cos(angle);
+    const y = cy + rLabel*Math.sin(angle);
+    const t = document.createElementNS('http://www.w3.org/2000/svg','text');
+    t.setAttribute('x', x); t.setAttribute('y', y);
+    t.setAttribute('text-anchor','middle'); t.setAttribute('dominant-baseline','middle');
+    t.textContent = lab;
+    labelsG.appendChild(t);
+    const tick = document.createElementNS('http://www.w3.org/2000/svg','line');
+    const x1 = cx + rTickInner*Math.cos(angle), y1 = cy + rTickInner*Math.sin(angle);
+    const x2 = cx + rTickOuter*Math.cos(angle), y2 = cy + rTickOuter*Math.sin(angle);
+    tick.setAttribute('x1',x1); tick.setAttribute('y1',y1); tick.setAttribute('x2',x2); tick.setAttribute('y2',y2);
+    ticksG.appendChild(tick);
+  });
+
+  const POOL = [...SECRETS, ...FACTS, ...QUOTES, ...RIDDLES.map(r=>r.q + ' — ' + r.a)];
+  const needle = document.getElementById('dialNeedle');
+  const spinBtn = document.getElementById('wheelSpin');
+  const capsule = document.getElementById('capsule');
+  let rotation = 0;
+
+  function spin(){
+    const extra = 1080 + Math.floor(Math.random()*360);
+    rotation += extra;
+    needle.style.transform = `rotate(${rotation}deg)`;
+    capsule.innerHTML = '<p class="placeholder">DECODING…</p>';
+    setTimeout(()=>{
+      const item = POOL[Math.floor(Math.random()*POOL.length)];
+      capsule.innerHTML = `<p>${item}</p>`;
+    }, 3700);
+  }
+  spinBtn.addEventListener('click', spin);
+  spinBtn.addEventListener('keydown', e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); spin(); } });
+})();
+
+/* ================= FRAGMENTS MARQUEE ================= */
+(function(){
+  const track = document.getElementById('marqueeTrack');
+  const doubled = [...QUOTES, ...QUOTES];
+  doubled.forEach(q=>{
+    const d = document.createElement('div');
+    d.className = 'frag-item';
+    d.textContent = q;
+    track.appendChild(d);
+  });
+})();
+
+/* ================= MUSIC: Star Shopping via YouTube embed ================= */
+(function(){
+  const btn = document.getElementById('soundToggle');
+  const label = document.getElementById('soundLabel');
+  const player = document.getElementById('ytplayer');
+  let playing = false;
+
+  function send(func){
+    player.contentWindow.postMessage(JSON.stringify({event:'command', func:func, args:[]}), '*');
+  }
+  btn.addEventListener('click', ()=>{
+    playing = !playing;
+    btn.classList.toggle('on', playing);
+    btn.setAttribute('aria-pressed', String(playing));
+    label.textContent = playing ? 'PLAYING…' : 'STAR SHOPPING';
+    send(playing ? 'playVideo' : 'pauseVideo');
+  });
+})();
+</script>
+</body>
+</html>
