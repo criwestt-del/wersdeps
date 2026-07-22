@@ -5,9 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Criwest — دروازه‌ی ناشناخته‌ها</title>
 <meta name="description" content="Criwest — یه جای خاص برای Freaks. برای اونایی که دنیا رو یه‌جور دیگه می‌بینن.">
+<meta name="theme-color" content="#0a0910">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%230a0910'/%3E%3Ctext x='50' y='62' font-size='46' text-anchor='middle' fill='%23c9a227' font-family='serif'%3E%E2%9C%BA%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;0,9..144,900;1,9..144,400;1,9..144,600;1,9..144,900&family=Vazirmatn:wght@100..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;0,9..144,900;1,9..144,400;1,9..144,600;1,9..144,900&family=Vazirmatn:wght@100..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;0,9..144,900;1,9..144,400;1,9..144,600;1,9..144,900&family=Vazirmatn:wght@100..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" crossorigin>
 <style>
   :root{
     --void:#0a0910;
@@ -28,8 +32,27 @@
     --mono: 'IBM Plex Mono', monospace;
   }
 
+  html[data-theme="light"]{
+    --void:#f5f1e8;
+    --void-2:#efe9db;
+    --surface:#ffffff;
+    --surface-2:#f4efe2;
+    --line: rgba(40,32,20,0.12);
+    --line-strong: rgba(40,32,20,0.22);
+    --ink:#231d2e;
+    --dim:#5c5468;
+    --dimmer:#8b8397;
+    --signal:#9c7a12;
+    --signal-soft: rgba(156,122,18,0.12);
+    --amethyst:#6b46c9;
+    --amethyst-soft: rgba(107,70,201,0.1);
+  }
+
   *{ box-sizing:border-box; margin:0; padding:0; }
   html{ scroll-behavior:smooth; }
+  body, header.nav, .fact-card, .riddle-card, .quiz-box, .secret-card, .capsule, footer::before{
+    transition: background-color .5s ease, color .5s ease, border-color .5s ease;
+  }
   @media (prefers-reduced-motion: reduce){
     html{ scroll-behavior:auto; }
     *{ animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important; scroll-behavior:auto !important; }
@@ -85,7 +108,27 @@
     font-family:var(--fa); font-weight:800;
     font-size:clamp(28px, 4vw, 46px); line-height:1.4; color:var(--ink);
     margin-bottom:20px; max-width:820px; letter-spacing:-0.01em;
+    display:inline-block; transition: text-shadow .5s ease, transform .5s ease;
   }
+  h2.title:hover{
+    text-shadow: 0 0 26px var(--signal-soft), 0 0 60px rgba(155,107,255,0.14);
+    transform: scale(1.012);
+  }
+
+  /* ---------- 3D TILT ---------- */
+  .tilt-stage{ perspective:1200px; }
+  .tilt{
+    transform-style:preserve-3d;
+    transition: transform .15s ease-out, box-shadow .35s ease;
+    will-change:transform;
+  }
+  .tilt:hover{ box-shadow:0 24px 60px -20px rgba(0,0,0,0.55), 0 0 0 1px var(--line-strong); }
+  .tilt-glow{
+    position:absolute; inset:0; border-radius:inherit; pointer-events:none;
+    background: radial-gradient(240px circle at var(--mx,50%) var(--my,50%), rgba(201,162,39,0.16), transparent 65%);
+    opacity:0; transition:opacity .35s ease;
+  }
+  .tilt:hover .tilt-glow{ opacity:1; }
 
   p.lead{ color:var(--dim); font-size:clamp(15.5px,1.6vw,18px); max-width:640px; }
 
@@ -114,6 +157,27 @@
   .sound-btn .dot{ width:6px; height:6px; border-radius:50%; background:var(--dimmer); transition:all .3s; }
   .sound-btn.on .dot{ background:var(--signal); box-shadow:0 0 8px var(--signal); animation:pulse 1.6s infinite ease-in-out; }
   @keyframes pulse{ 0%,100%{ opacity:1; } 50%{ opacity:0.35; } }
+
+  .nav-actions{ display:flex; align-items:center; gap:10px; }
+  .icon-toggle{
+    width:38px; height:38px; border-radius:50%; border:1px solid var(--line-strong);
+    background:transparent; color:var(--dim); cursor:pointer; display:flex; align-items:center; justify-content:center;
+    font-size:15px; transition:all .35s ease;
+  }
+  .icon-toggle:hover, .icon-toggle:focus-visible{ border-color:var(--signal); color:var(--signal); transform:translateY(-2px) rotate(12deg); }
+  .nav-mark a{ text-decoration:none; color:inherit; display:inline-flex; align-items:center; gap:6px; }
+  .nav-mark a:hover{ opacity:0.8; }
+
+  .back-to-top{
+    position:fixed; bottom:26px; inset-inline-end:26px; z-index:400;
+    width:48px; height:48px; border-radius:50%; border:1px solid var(--line-strong);
+    background:var(--surface); color:var(--signal); cursor:pointer; display:flex; align-items:center; justify-content:center;
+    font-size:16px; opacity:0; visibility:hidden; transform:translateY(14px);
+    transition: opacity .4s ease, transform .4s ease, visibility .4s, border-color .3s ease, box-shadow .3s ease;
+    backdrop-filter:blur(6px);
+  }
+  .back-to-top.show{ opacity:1; visibility:visible; transform:translateY(0); }
+  .back-to-top:hover, .back-to-top:focus-visible{ box-shadow:0 0 24px rgba(201,162,39,0.25); border-color:var(--signal); }
 
   /* ---------- HERO ---------- */
   .hero{
@@ -187,6 +251,7 @@
     border:1px solid var(--line-strong); border-radius:6px;
     padding:clamp(32px,6vw,64px); text-align:center; overflow:hidden;
   }
+  #secret .tilt-stage{ display:block; }
   .secret-card::before{
     content:""; position:absolute; inset:0;
     background: radial-gradient(600px 200px at 50% 0%, var(--signal-soft), transparent 70%);
@@ -218,7 +283,7 @@
   .fact-stage{ display:grid; grid-template-columns: 1fr; gap:24px; max-width:820px; }
   .fact-card{
     border:1px solid var(--line); border-radius:6px; padding:36px clamp(24px,5vw,46px);
-    background:var(--surface); position:relative; min-height:150px;
+    background:var(--surface); position:relative; min-height:150px; overflow:hidden;
     display:flex; flex-direction:column; justify-content:center; gap:14px;
   }
   .fact-index{ font-family:var(--mono); font-size:11px; color:var(--signal); letter-spacing:0.14em; direction:ltr; text-align:left; }
@@ -231,12 +296,39 @@
   }
   .icon-btn:hover, .icon-btn:focus-visible{ border-color:var(--signal); color:var(--signal); transform:translateY(-2px); }
 
+  /* ---------- CIVILIZATIONS ---------- */
+  .civ-section{ border-top:1px solid var(--line); }
+  .civ-grid{ display:grid; grid-template-columns:repeat(auto-fit, minmax(260px,1fr)); gap:24px; margin-top:36px; }
+  .civ-card{
+    position:relative; border-radius:8px; overflow:hidden; border:1px solid var(--line);
+    aspect-ratio:4/5; background:var(--surface);
+  }
+  .civ-card img{ width:100%; height:100%; object-fit:cover; display:block; filter:saturate(0.9) contrast(1.05); transition:transform .6s ease, filter .6s ease; }
+  .civ-card:hover img{ transform:scale(1.07); filter:saturate(1.05) contrast(1.1); }
+  .civ-card::after{
+    content:""; position:absolute; inset:0;
+    background:linear-gradient(180deg, transparent 30%, rgba(10,9,16,0.92) 100%);
+    pointer-events:none;
+  }
+  .civ-info{ position:absolute; inset-inline:0; bottom:0; z-index:2; padding:20px 22px; }
+  .civ-name{ font-family:var(--serif); font-style:italic; font-weight:600; color:var(--signal); font-size:15px; direction:ltr; margin-bottom:8px; }
+  .civ-q{ font-family:var(--fa); font-size:13.5px; color:var(--ink); line-height:1.7; }
+
+  .philosophers{ margin-top:56px; display:grid; grid-template-columns:repeat(auto-fit, minmax(300px,1fr)); gap:20px; }
+  .phi-card{
+    border:1px solid var(--line); border-radius:6px; padding:26px 28px; background:var(--surface);
+    position:relative;
+  }
+  .phi-quote{ font-family:var(--fa); font-weight:600; font-size:15.5px; color:var(--ink); line-height:1.85; margin-bottom:14px; }
+  .phi-name{ font-family:var(--mono); font-size:10.5px; letter-spacing:0.12em; color:var(--signal); text-transform:uppercase; direction:ltr; }
+
   /* ---------- RIDDLES ---------- */
   .riddles-section{ border-top:1px solid var(--line); }
   .riddle-grid{ display:grid; grid-template-columns:repeat(auto-fit, minmax(280px,1fr)); gap:20px; }
   .riddle-card{
     border:1px solid var(--line); background:var(--surface); border-radius:6px; padding:26px 26px 24px;
     display:flex; flex-direction:column; gap:14px; cursor:pointer; transition:border-color .3s ease;
+    position:relative;
   }
   .riddle-card:hover{ border-color:var(--line-strong); }
   .riddle-q{ font-size:15px; color:var(--ink); }
@@ -251,7 +343,7 @@
   /* ---------- QUIZ (shared style: mirror + iq) ---------- */
   .quiz-box{
     max-width:680px; margin:0 auto; border:1px solid var(--line-strong); border-radius:6px;
-    background:var(--surface); padding:clamp(28px,5vw,48px); position:relative;
+    background:var(--surface); padding:clamp(28px,5vw,48px); position:relative; overflow:hidden;
   }
   .quiz-progress{ height:2px; background:var(--line); border-radius:2px; overflow:hidden; margin-bottom:30px; }
   .quiz-progress i{ display:block; height:100%; background:var(--signal); width:0%; transition:width .5s ease; }
@@ -328,12 +420,21 @@
 <div id="glow"></div>
 
 <header class="nav">
-  <div class="nav-mark">CRI<span>W</span>EST</div>
-  <button class="sound-btn" id="soundToggle" aria-pressed="false">
-    <span class="dot"></span>
-    <span id="soundLabel">STAR SHOPPING</span>
-  </button>
+  <div class="nav-mark">
+    <a href="https://t.me/criwest" target="_blank" rel="noopener" aria-label="کانال تلگرام Criwest">CRI<span>W</span>EST</a>
+  </div>
+  <div class="nav-actions">
+    <button class="icon-toggle" id="themeToggle" aria-label="تغییر حالت روشن/تاریک" aria-pressed="false">
+      <span id="themeIcon">🌙</span>
+    </button>
+    <button class="sound-btn" id="soundToggle" aria-pressed="false">
+      <span class="dot"></span>
+      <span id="soundLabel">STAR SHOPPING</span>
+    </button>
+  </div>
 </header>
+
+<button class="back-to-top" id="backToTop" aria-label="برو به بالا">↑</button>
 
 <!-- hidden youtube audio player -->
 <iframe id="ytplayer" width="1" height="1" style="position:fixed; bottom:0; left:0; opacity:0; pointer-events:none;"
@@ -353,7 +454,7 @@
 </section>
 
 <!-- IMAGE BREAK 1 — EARTHRISE -->
-<div class="imgbreak" style="background-image:url('https://apod.nasa.gov/apod/image/1812/Earthrise1_Apollo8AndersWeigang_960.jpg'); background-attachment:fixed;">
+<div class="imgbreak" data-bg="https://apod.nasa.gov/apod/image/1812/Earthrise1_Apollo8AndersWeigang_960.jpg" style="background-attachment:fixed;">
   <div class="imgbreak-content">
     <blockquote>«اولین بار که یه انسان زمین رو از پشت ماه دید، فهمید هیچ مرزی روی این سیاره واقعی نیست.»</blockquote>
     <div class="credit">Earthrise — Apollo 8 / NASA, 1968</div>
@@ -378,10 +479,11 @@
 
 <!-- SECRET OF THE DAY -->
 <section class="secret-section reveal" id="secret">
-  <div class="wrap" style="text-align:center;">
+  <div class="wrap tilt-stage" style="text-align:center;">
     <div class="eyebrow center">راز امروز</div>
     <h2 class="title" style="margin:0 auto 40px; text-align:center;">هر بار این مهر رو بشکنی، یه چیزی برات باز می‌شه که قرار نبود بدونی.</h2>
-    <div class="secret-card">
+    <div class="secret-card tilt">
+      <div class="tilt-glow"></div>
       <div class="secret-stamp">CLASSIFIED — FOR FREAKS ONLY</div>
       <div class="seal" id="secretSeal" tabindex="0" role="button" aria-label="شکستن مهر">✺</div>
       <div class="secret-text" id="secretText">برای دیدن راز امروز، مهر رو لمس کن.</div>
@@ -396,8 +498,9 @@
     <div class="eyebrow">سیگنال‌های عجیب</div>
     <h2 class="title">چیزایی درباره‌ی جهان، آدم و تاریخ که تا حالا کسی برات نگفته.</h2>
     <p class="lead" style="margin-bottom:36px;">فکت‌های واقعی و کمی عجیب — یکی‌یکی کشفشون کن.</p>
-    <div class="fact-stage">
-      <div class="fact-card">
+    <div class="fact-stage tilt-stage">
+      <div class="fact-card tilt" id="factCard">
+        <div class="tilt-glow"></div>
         <div class="fact-index" id="factIndex">01 / 14</div>
         <div class="fact-text" id="factText"></div>
         <div class="fact-controls">
@@ -411,28 +514,41 @@
 </section>
 
 <!-- IMAGE BREAK 2 — PILLARS OF CREATION -->
-<div class="imgbreak" style="background-image:url('https://apod.nasa.gov/apod/image/2210/stsci-pillarsofcreation1280c.jpg'); background-attachment:fixed;">
+<div class="imgbreak" data-bg="https://apod.nasa.gov/apod/image/2210/stsci-pillarsofcreation1280c.jpg" style="background-attachment:fixed;">
   <div class="imgbreak-content">
     <blockquote>ستاره‌ها همین الان، تو همین لحظه، دارن یه‌جای دیگه‌ی کهکشان متولد می‌شن.</blockquote>
     <div class="credit">Pillars of Creation — JWST / NASA, ESA, CSA, STScI</div>
   </div>
 </div>
 
+<!-- ANCIENT CIVILIZATIONS -->
+<section class="civ-section reveal" id="civilizations">
+  <div class="wrap">
+    <div class="eyebrow">قبل از ما</div>
+    <h2 class="title">تمدن‌هایی که رفتن، ولی هنوز دارن بهمون یه چیزی می‌گن.</h2>
+    <p class="lead" style="margin-bottom:8px;">هزاران سال قبل از این‌که تو اینو بخونی، یه نفر دیگه هم داشت به همین سؤالا فکر می‌کرد.</p>
+    <div class="civ-grid tilt-stage" id="civGrid"></div>
+
+    <div class="philosophers" id="phiGrid"></div>
+  </div>
+</section>
+
 <!-- RIDDLES -->
 <section class="riddles-section reveal" id="riddles">
   <div class="wrap">
     <div class="eyebrow">معماهای ذهن</div>
     <h2 class="title">قبل از دیدن جواب، حداقل یه‌بار خودت روش فکر کن.</h2>
-    <div class="riddle-grid" id="riddleGrid" style="margin-top:36px;"></div>
+    <div class="riddle-grid tilt-stage" id="riddleGrid" style="margin-top:36px;"></div>
   </div>
 </section>
 
 <!-- MIRROR / PERSONALITY QUIZ -->
 <section class="reveal" id="mirror" style="border-top:1px solid var(--line);">
-  <div class="wrap" style="text-align:center;">
+  <div class="wrap tilt-stage" style="text-align:center;">
     <div class="eyebrow center">آینه</div>
-    <h2 class="title" style="margin:0 auto 40px;">پنج سؤال. یه بازتاب. ببین کدوم Freak هستی.</h2>
-    <div class="quiz-box">
+    <h2 class="title" style="margin:0 auto 40px;">هفت سؤال. یه بازتاب. ببین کدوم Freak هستی.</h2>
+    <div class="quiz-box tilt">
+      <div class="tilt-glow"></div>
       <div class="quiz-progress"><i id="mirrorBar"></i></div>
       <div class="quiz-form show" id="mirrorForm">
         <div class="quiz-q" id="mirrorQ"></div>
@@ -450,11 +566,12 @@
 
 <!-- IQ TEST -->
 <section class="reveal" id="iq" style="border-top:1px solid var(--line);">
-  <div class="wrap" style="text-align:center;">
+  <div class="wrap tilt-stage" style="text-align:center;">
     <div class="eyebrow center">تست ذهن</div>
-    <h2 class="title" style="margin:0 auto 12px;">۶ سؤال منطقی. ببین ذهنت چقدر تیزه.</h2>
+    <h2 class="title" style="margin:0 auto 12px;">۸ سؤال منطقی. ببین ذهنت چقدر تیزه.</h2>
     <p class="lead" style="margin:0 auto 40px; text-align:center;">این یه تست علمیِ IQ نیست، فقط یه بازی سریع برای حال کردن با ذهنته.</p>
-    <div class="quiz-box">
+    <div class="quiz-box tilt">
+      <div class="tilt-glow"></div>
       <div class="quiz-progress"><i id="iqBar"></i></div>
       <div class="quiz-form show" id="iqForm">
         <div class="quiz-q" id="iqQ"></div>
@@ -500,7 +617,7 @@
 </section>
 
 <!-- IMAGE BREAK 3 — ALDRIN VISOR -->
-<div class="imgbreak" style="background-image:url('https://apod.nasa.gov/apod/image/2307/AldrinVisorCrop_Apollo11_1080.jpg'); background-attachment:fixed;">
+<div class="imgbreak" data-bg="https://apod.nasa.gov/apod/image/2307/AldrinVisorCrop_Apollo11_1080.jpg" style="background-attachment:fixed;">
   <div class="imgbreak-content">
     <blockquote>یه نفر همون لحظه که پاش رو گذاشت رو ماه، تو ذهنش داشت به زمین فکر می‌کرد.</blockquote>
     <div class="credit">Apollo 11 — Buzz Aldrin / NASA, 1969</div>
@@ -522,6 +639,8 @@
   <div class="fine">CRIWEST — A HOME FOR FREAKS — ARCHIVE STILL OPEN</div>
 </footer>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 <script>
 /* ================= DATA ================= */
 const SECRETS = [
@@ -536,7 +655,13 @@ const SECRETS = [
   "بعضی سؤالا رو نساختن که جوابشو بگیری؛ ساختنش که بیدار بمونی.",
   "هرچی بیشتر بدونی، مرز بین واقعی و شبیهِ واقعی کمرنگ‌تر می‌شه.",
   "شاید گذشته تموم نشده؛ فقط داری از یه زاویه‌ی دیگه نگاهش می‌کنی.",
-  "یکی همین الان داره به چیزی فکر می‌کنه که تو فردا بهش فکر می‌کنی."
+  "یکی همین الان داره به چیزی فکر می‌کنه که تو فردا بهش فکر می‌کنی.",
+  "چیزی که الان «الان» صداش می‌کنی، تا تمومِ این جمله رو بخونی، دیگه گذشته‌ست.",
+  "بعضی وقتا حرف نزدن، دقیق‌ترین جوابیه که می‌تونی بدی.",
+  "هرکسی یه نسخه از تو رو تو ذهنش داره که دیگه شبیه تو نیست.",
+  "چیزی که بهش می‌گی «خودم»، هر ده سال یه‌بار کامل عوض می‌شه.",
+  "شاید بعضی رؤیاها یادآوری‌ان، نه پیش‌گویی.",
+  "تنهایی همیشه نبودِ آدم‌ها نیست؛ گاهی نبودِ حرفیه که هیچ‌وقت زده نشد."
 ];
 
 const FACTS = [
@@ -553,7 +678,14 @@ const FACTS = [
   "مکالمه‌های تو ذهنت سریع‌تر از اونیه که بتونی با صدای بلند بگیشون.",
   "بعضی حیوونا میدان مغناطیسی زمین رو می‌بینن؛ چیزی که آدم هیچ‌وقت تجربه نکرده.",
   "خیلی محتمله اتم‌های بدنت یه زمانی بخشی از یه ستاره‌ی منفجرشده بودن.",
-  "تو خواب، مغزت اجازه می‌ده قوانین فیزیک رو کامل نادیده بگیری."
+  "تو خواب، مغزت اجازه می‌ده قوانین فیزیک رو کامل نادیده بگیری.",
+  "قلب یه میگو تو سرشه، نه تو سینه‌ش.",
+  "یه روز روی زهره از یه سال روی زهره طولانی‌تره.",
+  "عسل هیچ‌وقت خراب نمی‌شه؛ تو مقبره‌های فرعون‌ها عسلِ هنوز قابل‌خوردن پیدا شده.",
+  "بدن انسان تقریباً هر هفت تا ده سال یه‌بار بیشتر سلول‌هاش رو عوض می‌کنه.",
+  "بعضی درخت‌ها از طریق ریشه‌هاشون زیرِ زمین با هم «حرف می‌زنن».",
+  "نور خورشید حدود هشت دقیقه طول می‌کشه تا به زمین برسه؛ یعنی خورشیدی که می‌بینی، هشت دقیقه پیشه.",
+  "مغز انسان حدود ۷۳ درصد آبه — یعنی فکر کردن، تا حدی، مثل موج زدن تو آبه."
 ];
 
 const RIDDLES = [
@@ -564,7 +696,11 @@ const RIDDLES = [
   {q:"می‌شکنمت تا ازت استفاده کنم. چی‌ام؟", a:"تخم‌مرغ."},
   {q:"تو تاریکی کامل هم دیده می‌شم، چون از خودم نور دارم. چی‌ام؟", a:"یه فکر — یا یه رؤیا."},
   {q:"همه دارنش، ولی هیچ‌کس نمی‌تونه قرضش بده یا بگیره. چیه؟", a:"زمانِ خودِ هرکس."},
-  {q:"چند تا ماه داره یه سال؟ (سؤال ساده‌ست، ولی همه یهو گیر می‌کنن)", a:"۱۲ تا — گاهی سؤال ساده، جواب سخت نیست، فقط ذهن گول می‌خوره."}
+  {q:"چند تا ماه داره یه سال؟ (سؤال ساده‌ست، ولی همه یهو گیر می‌کنن)", a:"۱۲ تا — گاهی سؤال ساده، جواب سخت نیست، فقط ذهن گول می‌خوره."},
+  {q:"هرچی خشک‌ترم می‌کنی، خیس‌تر می‌شم. چی‌ام؟", a:"حوله."},
+  {q:"دو تا پدر و دو تا پسر رفتن ماهیگیری، ولی فقط سه‌تا ماهی گرفتن. چطور ممکنه؟", a:"چون سه نفر بودن: پدربزرگ، پدر و پسر."},
+  {q:"چیزی که هرچی سبک‌تر باشه، سخت‌تره نگه‌داشتنش؟", a:"نفس."},
+  {q:"یه اتاق تاریک هست با یه شمعِ روشن، یه چراغ‌نفتی و یه کبریت. اول کدوم رو روشن می‌کنی؟", a:"کبریت."}
 ];
 
 const QUOTES = [
@@ -579,7 +715,34 @@ const QUOTES = [
   "بی‌نهایت رو نمی‌شه فهمید، فقط می‌شه از کنارش رد شد و حسش کرد.",
   "هر سؤالی که جوابشو می‌دونی، دیگه سؤال نیست؛ فقط یادآوریه.",
   "همیشه دیرتر از لحظه‌ای که توشیم، می‌فهمیمش.",
-  "بودن تو این دنیا یعنی هر لحظه یه‌جوری ناتموم موندن."
+  "بودن تو این دنیا یعنی هر لحظه یه‌جوری ناتموم موندن.",
+  "هر پایانی، از یه زاویه‌ی دیگه، فقط شروعِ یه چیز نام‌گذاری‌نشده‌ست.",
+  "چیزی که می‌ترسونتت، معمولاً همون چیزیه که باید بهش نزدیک‌تر شی.",
+  "آدما رو نه با حرفاشون، با چیزی که ازش فرار می‌کنن می‌شناسی.",
+  "دنیا رو کسایی می‌سازن که هنوز باورش نکردن غیرممکنه."
+];
+
+const PHILOSOPHERS = [
+  {q:"تنها چیزی که واقعاً می‌دونم اینه که هیچی نمی‌دونم.", n:"سقراط"},
+  {q:"هیچ‌وقت دوبار پا تو یه رودخونه نمی‌ذاری؛ چون هم رودخونه عوض شده، هم تو.", n:"هراکلیتوس"},
+  {q:"کسی که با خودش در جنگه، در برابر هیچ دشمنی امن نیست.", n:"مارکوس اورلیوس"},
+  {q:"اونی که ذهنش رو تربیت نکرده، هر بادی می‌تونه ببردش.", n:"اپیکتتوس"},
+  {q:"انسان محکوم به آزاد بودنه؛ حتی سکوت کردن هم یه انتخابه.", n:"ژان‌پل سارتر"},
+  {q:"اونی که یه چراییِ زندگی داره، تقریباً هر چگونه‌ای رو تحمل می‌کنه.", n:"نیچه"},
+  {q:"شک کردن، اولین قدم به‌سمتِ فهمیدنه، نه دشمنِ اون.", n:"دکارت"},
+  {q:"زندگی‌ای که آزمایش نشده، ارزشِ زیستن نداره.", n:"سقراط"},
+  {q:"ما اون چیزی می‌شیم که بارها و بارها تکرارش می‌کنیم.", n:"ارسطو"},
+  {q:"راه رفتن به سمت خودت، همیشه از یه بیابون تنهایی می‌گذره.", n:"مولانا"}
+];
+
+const CIVILIZATIONS = [
+  {img:"https://commons.wikimedia.org/wiki/Special:FilePath/All%20Gizah%20Pyramids.jpg?width=700", name:"EGYPT — c. 2560 BCE", q:"چهار هزار و پونصد سال بدون ماشین و برق، یه بنا ساختن که هنوز دقیق‌تر از خیلی چیزای امروزه."},
+  {img:"https://commons.wikimedia.org/wiki/Special:FilePath/Machu%20Picchu%2C%20Peru.jpg?width=700", name:"INCA — c. 1450 CE", q:"یه شهر رو بالای کوه ساختن، بدون ملات، جوری که هزار سال زلزله رو تحمل کنه."},
+  {img:"https://commons.wikimedia.org/wiki/Special:FilePath/Parthenon%20from%20south.jpg?width=700", name:"GREECE — c. 447 BCE", q:"جایی که برای اولین‌بار پرسیدن «حقیقت چیه؟» و صد جواب مختلف گرفتن."},
+  {img:"https://commons.wikimedia.org/wiki/Special:FilePath/Petra%20Treasury.jpg?width=700", name:"NABATAEA — c. 300 BCE", q:"یه شهر کامل رو تو دلِ سنگ کندن؛ انگار می‌خواستن یادشون بمونه سنگم می‌شه خونه."},
+  {img:"https://commons.wikimedia.org/wiki/Special:FilePath/Stonehenge%20Total.jpg?width=700", name:"NEOLITHIC BRITAIN — c. 2500 BCE", q:"هنوز دقیقاً نمی‌دونیم چرا این سنگا رو اونجا چیدن؛ شاید بعضی چیزا قرار نیست فهمیده بشن."},
+  {img:"https://commons.wikimedia.org/wiki/Special:FilePath/Mayan%20Temple%20in%20Chichen%20Itza.jpg?width=700", name:"MAYA — c. 600 CE", q:"تقویمی ساختن که حرکت ستاره‌ها رو دقیق‌تر از خیلی محاسبات دیجیتالِ اولیه پیش‌بینی می‌کرد."},
+  {img:"https://commons.wikimedia.org/wiki/Special:FilePath/Angkor%20Wat.jpg?width=700", name:"KHMER — c. 1150 CE", q:"بزرگ‌ترین بنای مذهبیِ جهان رو ساختن، فقط برای این‌که یه ایده رو نشون بدن، نه برای موندن توش."}
 ];
 
 const MIRROR_QUIZ = [
@@ -612,6 +775,18 @@ const MIRROR_QUIZ = [
     "یه چیز خیالی می‌ساختم — داستان، نقشه، دنیا",
     "یه موضوع رو تا ته می‌کاویدم",
     "بی‌هدف راه می‌افتادم تا ببینم کجا می‌رسم"
+  ]},
+  {q:"وقتی یه نفر بهت یه خبر عجیب می‌ده، اولین واکنشت چیه؟", opts:[
+    "ساکت می‌مونم، ولی همه‌چیز رو ذخیره می‌کنم",
+    "ذهنم فوری می‌ره سراغِ «اگه این باشه چی؟»",
+    "می‌پرسم «از کجا مطمئنی؟»",
+    "کنجکاو می‌شم ببینم این خبر منو کجا می‌بره"
+  ]},
+  {q:"کدوم برات سخت‌تره؟", opts:[
+    "حرف زدن درباره‌ی چیزی که هنوز کامل نفهمیدمش",
+    "موندن تو یه واقعیت که خیالی توش نیست",
+    "پذیرفتن چیزی بدون مدرک کافی",
+    "موندن تو یه مسیر ثابت برای مدت طولانی"
   ]}
 ];
 
@@ -628,13 +803,15 @@ const IQ_QUIZ = [
   {q:"اگه امروز سه‌شنبه باشه، ۱۰۰ روز دیگه چه روزیه؟", opts:["چهارشنبه","پنجشنبه","جمعه","شنبه"], correct:1},
   {q:"دنباله رو کامل کن: A, C, F, J, ?", opts:["M","N","O","P"], correct:2},
   {q:"کدوم عدد با بقیه فرق داره؟", opts:["3","7","11","12"], correct:3},
-  {q:"«بعضی گربه‌ها سیاهن. همه‌ی سیاه‌ها ترسناکن.» پس چی درسته؟", opts:["همه‌ی گربه‌ها ترسناکن","بعضی گربه‌ها ترسناکن","هیچ گربه‌ای ترسناک نیست","نمی‌شه گفت"], correct:1}
+  {q:"«بعضی گربه‌ها سیاهن. همه‌ی سیاه‌ها ترسناکن.» پس چی درسته؟", opts:["همه‌ی گربه‌ها ترسناکن","بعضی گربه‌ها ترسناکن","هیچ گربه‌ای ترسناک نیست","نمی‌شه گفت"], correct:1},
+  {q:"دنباله رو کامل کن: 1, 1, 2, 3, 5, 8, ?", opts:["11","12","13","14"], correct:2},
+  {q:"اگه همه‌ی «آلفا»ها «بتا» باشن و بعضی «بتا»ها «گاما» باشن، پس چی درسته؟", opts:["همه‌ی آلفاها گاما هستن","بعضی آلفاها ممکنه گاما باشن","هیچ آلفایی گاما نیست","نمی‌شه گفت"], correct:1}
 ];
 
 const IQ_RESULTS = [
   {min:0, max:2, name:"CURIOUS MIND", desc:"مهم نیست چندتا رو درست زدی؛ مهمه که تا آخر باهاش موندی. کنجکاوی از هر جوابی باارزش‌تره."},
-  {min:3, max:4, name:"SHARP MIND", desc:"ذهنت الگوها رو زود می‌گیره. دقیقاً همون چیزیه که بین Freaks قدر می‌بینه."},
-  {min:5, max:6, name:"RARE MIND", desc:"خیلی کم پیش میاد کسی همه رو بزنه. یا خیلی تیزی، یا خیلی شانس آوردی — به‌هرحال بین ما جات هست."}
+  {min:3, max:5, name:"SHARP MIND", desc:"ذهنت الگوها رو زود می‌گیره. دقیقاً همون چیزیه که بین Freaks قدر می‌بینه."},
+  {min:6, max:8, name:"RARE MIND", desc:"خیلی کم پیش میاد کسی همه رو بزنه. یا خیلی تیزی، یا خیلی شانس آوردی — به‌هرحال بین ما جات هست."}
 ];
 
 /* ================= HERO CANVAS STARFIELD ================= */
@@ -747,8 +924,8 @@ const IQ_RESULTS = [
   const grid = document.getElementById('riddleGrid');
   RIDDLES.forEach(r=>{
     const card = document.createElement('div');
-    card.className = 'riddle-card';
-    card.innerHTML = `<div class="riddle-hint">RIDDLE</div><div class="riddle-q">${r.q}</div><div class="riddle-a">${r.a}</div>`;
+    card.className = 'riddle-card tilt';
+    card.innerHTML = `<div class="tilt-glow"></div><div class="riddle-hint">RIDDLE</div><div class="riddle-q">${r.q}</div><div class="riddle-a">${r.a}</div>`;
     card.addEventListener('click', ()=> card.classList.toggle('open'));
     grid.appendChild(card);
   });
@@ -901,6 +1078,122 @@ buildQuiz({
     btn.setAttribute('aria-pressed', String(playing));
     label.textContent = playing ? 'PLAYING…' : 'STAR SHOPPING';
     send(playing ? 'playVideo' : 'pauseVideo');
+  });
+})();
+
+/* ================= THEME TOGGLE ================= */
+(function(){
+  const root = document.documentElement;
+  const btn = document.getElementById('themeToggle');
+  const icon = document.getElementById('themeIcon');
+  let saved = 'dark';
+  try{ saved = localStorage.getItem('criwest-theme') || 'dark'; }catch(e){}
+  function apply(theme){
+    root.setAttribute('data-theme', theme);
+    icon.textContent = theme === 'light' ? '☀️' : '🌙';
+    btn.setAttribute('aria-pressed', String(theme === 'light'));
+    try{ localStorage.setItem('criwest-theme', theme); }catch(e){}
+  }
+  apply(saved);
+  btn.addEventListener('click', ()=>{
+    const next = root.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+    apply(next);
+  });
+})();
+
+/* ================= BACK TO TOP ================= */
+(function(){
+  const btn = document.getElementById('backToTop');
+  window.addEventListener('scroll', ()=>{
+    btn.classList.toggle('show', window.scrollY > 700);
+  }, {passive:true});
+  btn.addEventListener('click', ()=> window.scrollTo({top:0, behavior:'smooth'}));
+})();
+
+/* ================= LAZY BACKGROUND IMAGES ================= */
+(function(){
+  const targets = document.querySelectorAll('.imgbreak[data-bg]');
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(en=>{
+      if(en.isIntersecting){
+        const el = en.target;
+        el.style.backgroundImage = `url('${el.dataset.bg}')`;
+        el.classList.add('bg-loaded');
+        io.unobserve(el);
+      }
+    });
+  }, {rootMargin:'400px 0px'});
+  targets.forEach(t=>io.observe(t));
+})();
+
+/* ================= CIVILIZATIONS + PHILOSOPHERS ================= */
+(function(){
+  const civGrid = document.getElementById('civGrid');
+  CIVILIZATIONS.forEach(c=>{
+    const card = document.createElement('div');
+    card.className = 'civ-card tilt';
+    card.innerHTML = `
+      <img src="${c.img}" alt="${c.name}" loading="lazy" decoding="async">
+      <div class="tilt-glow"></div>
+      <div class="civ-info">
+        <div class="civ-name">${c.name}</div>
+        <div class="civ-q">${c.q}</div>
+      </div>`;
+    civGrid.appendChild(card);
+  });
+
+  const phiGrid = document.getElementById('phiGrid');
+  PHILOSOPHERS.forEach(p=>{
+    const card = document.createElement('div');
+    card.className = 'phi-card';
+    card.innerHTML = `<div class="phi-quote">«${p.q}»</div><div class="phi-name">${p.n}</div>`;
+    phiGrid.appendChild(card);
+  });
+})();
+
+/* ================= 3D TILT ================= */
+(function(){
+  if(window.matchMedia('(pointer:coarse)').matches) return;
+  const MAX = 8;
+  function bindTilt(el){
+    function onMove(e){
+      const r = el.getBoundingClientRect();
+      const px = (e.clientX - r.left) / r.width;
+      const py = (e.clientY - r.top) / r.height;
+      const rx = (0.5 - py) * MAX * 2;
+      const ry = (px - 0.5) * MAX * 2;
+      el.style.transform = `rotateX(${rx}deg) rotateY(${ry}deg) translateZ(6px)`;
+      el.style.setProperty('--mx', (px*100) + '%');
+      el.style.setProperty('--my', (py*100) + '%');
+    }
+    function onLeave(){ el.style.transform = 'rotateX(0deg) rotateY(0deg) translateZ(0)'; }
+    el.addEventListener('mousemove', onMove);
+    el.addEventListener('mouseleave', onLeave);
+  }
+  function scan(){ document.querySelectorAll('.tilt').forEach(bindTilt); }
+  scan();
+  new MutationObserver(scan).observe(document.body, {childList:true, subtree:true});
+})();
+
+/* ================= GSAP PARALLAX + STAGGER ================= */
+(function(){
+  if(typeof gsap === 'undefined') return;
+  gsap.registerPlugin(ScrollTrigger);
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(reduced) return;
+
+  document.querySelectorAll('.imgbreak .imgbreak-content').forEach(el=>{
+    gsap.fromTo(el, {yPercent:8}, {
+      yPercent:-8, ease:'none',
+      scrollTrigger:{ trigger: el.closest('.imgbreak'), start:'top bottom', end:'bottom top', scrub:true }
+    });
+  });
+
+  document.querySelectorAll('.civ-grid, .philosophers, .riddle-grid').forEach(grid=>{
+    gsap.from(grid.children, {
+      opacity:0, y:34, duration:0.7, ease:'power2.out', stagger:0.08,
+      scrollTrigger:{ trigger: grid, start:'top 85%' }
+    });
   });
 })();
 </script>
