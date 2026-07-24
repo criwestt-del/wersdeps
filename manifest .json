@@ -1,0 +1,19 @@
+{
+  "name": "Criwest — دروازه‌ی ناشناخته‌ها",
+  "short_name": "Criwest",
+  "description": "یه جای خاص برای Freaks. برای اونایی که دنیا رو یه‌جور دیگه می‌بینن.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0a0910",
+  "theme_color": "#0a0910",
+  "orientation": "portrait-primary",
+  "lang": "fa",
+  "dir": "rtl",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%230a0910'/%3E%3Ctext x='50' y='62' font-size='46' text-anchor='middle' fill='%23c9a227' font-family='serif'%3E%E2%9C%BA%3C/text%3E%3C/svg%3E",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
